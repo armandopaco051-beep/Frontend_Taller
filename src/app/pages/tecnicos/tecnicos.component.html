@@ -1,0 +1,102 @@
+<app-navbar></app-navbar>
+
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1>🔧 Gestión de Técnicos</h1>
+      <p>Administra el personal técnico de cada taller</p>
+    </div>
+    <button class="btn-primary" style="width:auto" (click)="abrirModal()">
+      + Nuevo Técnico
+    </button>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Teléfono</th>
+          <th>Taller</th>
+          <th>Disponibilidad</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tecnicos">
+          <td>{{ t.codigo }}</td>
+          <td>{{ t.telefono }}</td>
+          <td>{{ t.id_taller }}</td>
+          <td>
+            <span
+              class="badge"
+              [class.active]="t.disponible"
+              [class.inactive]="!t.disponible"
+              style="cursor:pointer"
+              (click)="toggleDisponibilidad(t)">
+              {{ t.disponible ? '🟢 Disponible' : '🔴 Ocupado' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="btn-secondary" (click)="abrirModal(t)">✏️ Editar</button>
+            <button class="btn-danger" (click)="eliminar(t.codigo)">🗑️ Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="tecnicos.length === 0">
+          <td colspan="5" class="empty">No hay técnicos registrados</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal card" (click)="$event.stopPropagation()">
+    <h3>{{ editando ? 'Editar Técnico' : 'Nuevo Técnico' }}</h3>
+
+    <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+    <div class="form-group">
+      <label>Teléfono</label>
+      <input type="text" [(ngModel)]="form.telefono" placeholder="+591 7XXXXXXX" />
+    </div>
+
+    <div class="form-group">
+      <label>Taller asignado</label>
+      <select [(ngModel)]="form.id_taller">
+        <option value="0" disabled>Selecciona un taller</option>
+        <option *ngFor="let t of talleres" [value]="t.codigo">
+          {{ t.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>ID de usuario</label>
+      <input type="number" [(ngModel)]="form.id_usuario" placeholder="ID del usuario" />
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Latitud</label>
+        <input type="number" [(ngModel)]="form.latitud" placeholder="-17.7833" />
+      </div>
+      <div class="form-group">
+        <label>Longitud</label>
+        <input type="number" [(ngModel)]="form.longitud" placeholder="-63.1821" />
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button
+        class="btn-primary"
+        style="width:auto"
+        (click)="guardar()"
+        [disabled]="loading">
+        {{ loading ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-wrapper">
+  <div class="dashboard-header">
+    <div>
+      <h1>Bienvenido, <span>{{ usuario?.nombre }}</span> 👋</h1>
+      <p>Panel de control — Plataforma de Emergencias Vehiculares</p>
+    </div>
+    <div class="date">{{ _Today | date:'EEEE, d MMMM yyyy' }}</div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card card" *ngFor="let stat of stats">
+      <div class="stat-icon" [style.color]="stat.color">{{ stat.icon }}</div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stat.value }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h3>Acciones Rápidas</h3>
+    <div class="actions-grid">
+      <a routerLink="/talleres" class="action-card card">
+        <span class="action-icon">🏪</span>
+        <span>Gestionar Talleres</span>
+      </a>
+      <a routerLink="/tecnicos" class="action-card card">
+        <span class="action-icon">🔧</span>
+        <span>Gestionar Técnicos</span>
+      </a>
+      <a routerLink="/perfil" class="action-card card">
+        <span class="action-icon">👤</span>
+        <span>Mi Perfil</span>
+      </a>
+    </div>
+  </div>
+</div>

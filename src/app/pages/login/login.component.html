@@ -1,0 +1,41 @@
+<div class="login-wrapper">
+  <div class="login-left">
+    <div class="brand">
+      <span class="brand-icon">🚗</span>
+      <h1>EmergVial</h1>
+      <p>Plataforma Inteligente de Atención de Emergencias Vehiculares</p>
+    </div>
+    <div class="features">
+      <div class="feature"><span>⚡</span> Asignación inteligente en tiempo real</div>
+      <div class="feature"><span>🤖</span> Diagnóstico con Inteligencia Artificial</div>
+      <div class="feature"><span>📍</span> Geolocalización precisa de incidentes</div>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-card">
+      <h2>Iniciar Sesión</h2>
+      <p class="subtitle">Accede al panel de gestión</p>
+
+      <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" [(ngModel)]="email" name="email" placeholder="correo@ejemplo.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="password" placeholder="••••••••" />
+      </div>
+      <button class="btn-primary" (click)="onLogin()" [disabled]="loading">
+        {{ loading ? 'Ingresando...' : 'Iniciar Sesión' }}
+      </button>
+
+      <div class="links">
+        <a routerLink="/recuperar-password">¿Olvidaste tu password?</a>
+        <a routerLink="/registro">Crear cuenta nueva</a>
+      </div>
+    </div>
+  </div>
+</div>

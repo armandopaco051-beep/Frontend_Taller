@@ -1,0 +1,20 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span>🚗</span>
+    <span class="brand-text">EmergVial</span>
+  </div>
+
+  <div class="navbar-links">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/talleres" routerLinkActive="active">Talleres</a>
+    <a routerLink="/tecnicos" routerLinkActive="active">Técnicos</a>
+  </div>
+
+  <div class="navbar-user">
+    <a routerLink="/perfil" class="user-info">
+      <div class="avatar">{{ usuario?.nombre?.charAt(0) }}</div>
+      <span>{{ usuario?.nombre }}</span>
+    </a>
+    <button class="logout-btn" (click)="logout()">Salir</button>
+  </div>
+</nav>
