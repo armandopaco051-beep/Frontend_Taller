@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { permisoGuard, rolGuard } from './core/guards/rol.guard';
 
 export const routes: Routes = [
     {
@@ -24,6 +25,35 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboart.component').then(m => m.DashboardComponent),
     canActivate: [authGuard]
   },
+    {
+    path: 'usuarios',
+    loadComponent: () => import('./pages/usuarios/usuario.component').then(m => m.UsuariosComponent),
+    canActivate: [rolGuard([1, 2])] // Admin plataforma y admin taller
+  },
+    {
+    path: 'roles',
+    loadComponent: () => import('./pages/roles/roles.component').then(m => m.RolesComponent),
+    canActivate: [rolGuard([1])] // Solo admin plataforma
+  },
+   {
+    path: 'admin-taller/dashboard/:idTaller',
+    canActivate: [authGuard, rolGuard([2])],
+    loadComponent: () =>
+      import('./pages/dashboard-taller/dashboard-taller.component').then(m => m.DashboardTallerComponent)
+  },
+  {
+    path : 'admin-taller/tecnicos',
+    loadComponent: () => import('./pages/tecnicos-taller/tecnicos-taller.component').then(m => m.TecnicosTallerComponent),
+    
+    canActivate: [authGuard, rolGuard([2])] // Solo admin taller
+  
+  },
+  
+  {
+    path: 'bitacora',
+    loadComponent: () => import('./pages/bitacora/bitacora.component').then(m => m.BitacoraComponent),
+    canActivate: [authGuard, rolGuard([1, 2])] // Admin plataforma y admin taller
+  },
   {
     path: 'perfil',
     loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent),
@@ -32,12 +62,12 @@ export const routes: Routes = [
   {
     path: 'talleres',
     loadComponent: () => import('./pages/talleres/talleres.component').then(m => m.TalleresComponent),
-    canActivate: [authGuard]
+    canActivate: [rolGuard([1, 2])] // Admin plataforma y admin taller
   },
   {
     path: 'tecnicos',
     loadComponent: () => import('./pages/tecnicos/tecnicos.component').then(m => m.TecnicosComponent),
-    canActivate: [authGuard]
+    canActivate: [rolGuard([1, 2])] // Admin plataforma y admin taller
   },
   { path: '**', redirectTo: 'login' }
 ];

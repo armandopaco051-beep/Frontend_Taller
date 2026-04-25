@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, NgForm} from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../core/services/auth.service";
 
@@ -16,16 +16,50 @@ export class LoginComponent {
     password = ''; 
     loading =false ; 
     error = ''; 
+    submitted = false;
     constructor(private auth: AuthService, private router: Router) {}
-    onLogin(){
+    onLogin(form : NgForm){
+        this.submitted = true;
+        if (form.invalid){
+            this.error = 'Completa los campos requeridos';
+            return;
+        }
         this.loading = true ; 
         this.error = ''; 
         this.auth.login({ email: this.email, password: this.password}).subscribe({
-             next: () => this.router.navigate(['/dashboard']),
-             error: (err) => {
-               this.error = err.error?.detail || 'Error al iniciar sesión';
-               this.loading = false;
-             }
+             next: (resp) => {
+             const usuario = resp.usuario;
+
+                 if (usuario.id_rol === 1) {
+                  this.router.navigate(['/dashboard']);
+             return;
+            }
+
+                    if (usuario.id_rol === 2) {
+                 let idTaller = localStorage.getItem('id_taller');
+
+                      if (!idTaller) {
+                  idTaller = '2';
+
+                 if (!idTaller) {
+                    this.error = 'Debes ingresar el código del taller';
+                    this.loading = false;
+                    return;
+                 }
+
+                 //localStorage.setItem('id_taller', idTaller);
+                        }
+                        
+                  this.router.navigate(['/admin-taller/dashboard', idTaller]);
+                    return;
+                }
+
+                this.router.navigate(['/login']);
+            },
+                error: (err) => {
+                    this.error = err.error?.detail || 'Error al iniciar sesión';
+                    this.loading = false;
+                }
         })
     }
     

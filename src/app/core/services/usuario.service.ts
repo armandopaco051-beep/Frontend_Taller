@@ -12,6 +12,13 @@ export class UsuarioService{
     obtener(codigo: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.apiUrl}/${codigo}`);
   }
+  
+  listar(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`${this.apiUrl}/`);
+  }
+  desactivar(codigo: string): Observable<{ mensaje: string }> {
+  return this.http.delete<{ mensaje: string }>(`${this.apiUrl}/${codigo}`);
+  }
 
   // Actualizar usuario hace petición PUT
   actualizar(codigo: string, datos: Partial<Usuario>): Observable<Usuario> {

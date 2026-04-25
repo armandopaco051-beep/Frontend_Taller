@@ -1,18 +1,22 @@
 export interface Usuario {
-    id: string;
+    codigo: string;
     nombre: string;
-    apellidos: string;
+    apellido: string;
     email: string;
-    telefono :string ;
-    estado :boolean;
-    fecha_registro:string ; 
+    telefono: string;
+    estado: boolean;
+    fecha_registro: string;
     rol: string;
-    id_rol: number; 
+    id_rol: number;
+    nombre_rol: string;
+    permisos: string[];
 }
+
 export interface loginRequest {
     email: string;
     password: string;
 }
+
 export interface RegisterRequest {
   codigo: string;
   nombre: string;
@@ -21,6 +25,13 @@ export interface RegisterRequest {
   password: string;
   telefono: string;
   id_rol: number;
+  codigo_taller?: number;
+}
+
+export interface TallerUsuario {
+  id_usuario: string;
+  codigo_taller: number;
+  fecha_asignacion: string;
 }
 
 export interface Token{
@@ -31,4 +42,8 @@ export interface Token{
 export interface Rol{
     id: number; 
     nombre: string;
+}
+export interface Permiso {
+    id : number; 
+    nombre : String
 }

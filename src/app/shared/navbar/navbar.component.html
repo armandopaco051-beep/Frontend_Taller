@@ -1,20 +1,31 @@
 <nav class="navbar">
-  <div class="navbar-brand">
+  <a class="navbar-brand" [routerLink]="getBrandLink()">
     <span>🚗</span>
     <span class="brand-text">EmergVial</span>
-  </div>
+  </a>
 
-  <div class="navbar-links">
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/talleres" routerLinkActive="active">Talleres</a>
-    <a routerLink="/tecnicos" routerLinkActive="active">Técnicos</a>
-  </div>
-
-  <div class="navbar-user">
-    <a routerLink="/perfil" class="user-info">
-      <div class="avatar">{{ usuario?.nombre?.charAt(0) }}</div>
-      <span>{{ usuario?.nombre }}</span>
+  <div class="navbar-links" *ngIf="usuario">
+    <a
+      *ngFor="let item of menuItems"
+      [routerLink]="item.path"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.exact ?? false }">
+      {{ item.label }}
     </a>
+  </div>
+
+  <div class="navbar-user" *ngIf="usuario">
+    <div class="user-info">
+      <div class="avatar">{{ usuario.nombre.charAt(0) }}</div>
+
+      <div class="user-details">
+        <span class="user-name">{{ usuario.nombre }}</span>
+        <span class="user-rol" [ngClass]="'rol-' + usuario.id_rol">
+          {{ usuario.nombre_rol }}
+        </span>
+      </div>
+    </div>
+
     <button class="logout-btn" (click)="logout()">Salir</button>
   </div>
 </nav>

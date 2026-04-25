@@ -11,6 +11,8 @@
     </button>
   </div>
 
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
   <div class="card">
     <table>
       <thead>
@@ -19,8 +21,12 @@
           <th>Nombre</th>
           <th>Teléfono</th>
           <th>Dirección</th>
-          <th>Coordenadas</th>
+          <th>Horario</th>
           <th>Estado</th>
+          <th>Solicitud</th>
+          <th>Usuario</th>
+          <th>Coordenadas</th>
+          <th>Observación</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -30,33 +36,34 @@
           <td>{{ t.nombre }}</td>
           <td>{{ t.telefono }}</td>
           <td class="dir-cell">{{ t.direccion }}</td>
-          <td class="coords">
-            <span>{{ t.latitud }}, {{ t.longitud }}</span>
+          <td class="horario-cell">
+            {{ formatHorario(t.horario_inicio) }} - {{ formatHorario(t.horario_fin) }}
           </td>
           <td>
-            <span class="badge"
-              [class.active]="t.activo"
-              [class.inactive]="!t.activo">
-              {{ t.activo ? 'Activo' : 'Inactivo' }}
+            <span class="estado-chip" [ngClass]="getEstadoClase(t.estado_registro)">
+              {{ t.estado_registro || 'pendiente' }}
             </span>
           </td>
+          <td class="fecha-cell">{{ formatFecha(t.fecha_solicitud) }}</td>
+          <td class="usuario-cell">{{ t.usuario_id || '—' }}</td>
+          <td class="coords">{{ t.latitud }}, {{ t.longitud }}</td>
+          <td class="obs-cell">{{ t.observacion_admin || '—' }}</td>
           <td class="actions">
             <button class="btn-secondary" (click)="abrirModal(t)">✏️ Editar</button>
             <button class="btn-danger" (click)="desactivar(t.codigo)">🗑️</button>
           </td>
         </tr>
         <tr *ngIf="talleres.length === 0">
-          <td colspan="7" class="empty">No hay talleres registrados</td>
+          <td colspan="11" class="empty">No hay talleres registrados</td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- ===================== MODAL FORMULARIO ===================== -->
+<!-- Modal de formulario -->
 <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
   <div class="modal card" (click)="$event.stopPropagation()">
-
     <div class="modal-header">
       <h3>{{ editando ? '✏️ Editar Taller' : '🏪 Nuevo Taller' }}</h3>
       <button class="close-btn" (click)="cerrarModal()">✕</button>
@@ -66,70 +73,65 @@
 
     <div class="form-group">
       <label>Nombre del Taller</label>
-      <input type="text" [(ngModel)]="form.nombre"
-             placeholder="Ej: Taller Central Norte" />
+      <input type="text" [(ngModel)]="form.nombre" placeholder="Ej: Taller Central Norte" />
     </div>
 
     <div class="form-group">
       <label>Teléfono</label>
-      <input type="text" [(ngModel)]="form.telefono"
-             placeholder="+591 7XXXXXXX" />
+      <input type="text" [(ngModel)]="form.telefono" placeholder="+591 7XXXXXXX" />
     </div>
 
-    <!-- DIRECCIÓN CON BOTÓN MAPA -->
     <div class="form-group">
       <label>Dirección</label>
       <div class="input-map-row">
-        <input
-          type="text"
-          [(ngModel)]="form.direccion"
-          placeholder="Selecciona en el mapa o escribe la dirección"
-          [class.loading-input]="loadingDireccion"
-          readonly />
+        <input type="text" [(ngModel)]="form.direccion" 
+               placeholder="Selecciona en el mapa o escribe la dirección"
+               [class.loading-input]="loadingDireccion" readonly />
         <button class="btn-map" (click)="abrirMapa()" type="button">
           📍 Seleccionar en Mapa
         </button>
       </div>
-      <span class="field-hint" *ngIf="loadingDireccion">
-        ⏳ Obteniendo dirección...
-      </span>
+      <span class="field-hint" *ngIf="loadingDireccion">⏳ Obteniendo dirección...</span>
       <span class="field-hint" *ngIf="form.latitud !== 0 && !loadingDireccion">
         ✅ Lat: {{ form.latitud }} | Lng: {{ form.longitud }}
       </span>
     </div>
 
-    <!-- COORDENADAS (solo lectura, se llenan desde el mapa) -->
     <div class="form-grid">
       <div class="form-group">
         <label>Latitud</label>
-        <input type="number" [(ngModel)]="form.latitud"
-               placeholder="-17.7833"
-               [class.filled]="form.latitud !== 0" />
+        <input type="number" [(ngModel)]="form.latitud" placeholder="-17.7833" />
       </div>
       <div class="form-group">
         <label>Longitud</label>
-        <input type="number" [(ngModel)]="form.longitud"
-               placeholder="-63.1821"
-               [class.filled]="form.longitud !== 0" />
+        <input type="number" [(ngModel)]="form.longitud" placeholder="-63.1821" />
+      </div>
+    </div>
+
+    <!-- ✅ NUEVO: Campos de horario -->
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Horario apertura</label>
+        <input type="time" [(ngModel)]="form.horario_inicio" />
+      </div>
+      <div class="form-group">
+        <label>Horario cierre</label>
+        <input type="time" [(ngModel)]="form.horario_fin" />
       </div>
     </div>
 
     <div class="modal-actions">
       <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn-primary" style="width:auto"
-              (click)="guardar()" [disabled]="loading">
+      <button class="btn-primary" style="width:auto" (click)="guardar()" [disabled]="loading">
         {{ loading ? 'Guardando...' : 'Guardar Taller' }}
       </button>
     </div>
-
   </div>
 </div>
 
-<!-- ===================== MODAL MAPA ===================== -->
-<div class="modal-overlay mapa-overlay" *ngIf="mostrarMapa"
-     (click)="cerrarMapa()">
+<!-- Modal del mapa -->
+<div class="modal-overlay mapa-overlay" *ngIf="mostrarMapa" (click)="cerrarMapa()">
   <div class="modal-mapa" (click)="$event.stopPropagation()">
-
     <div class="mapa-header">
       <div class="mapa-titulo">
         <span class="mapa-ico">📍</span>
@@ -146,34 +148,23 @@
       <span>↔️ También podés arrastrar el marcador</span>
     </div>
 
-    <!-- CONTENEDOR DEL MAPA LEAFLET -->
     <div id="mapa-leaflet"></div>
 
-    <!-- DIRECCIÓN DETECTADA -->
     <div class="mapa-resultado" *ngIf="form.direccion">
       <div class="resultado-ico">📌</div>
       <div class="resultado-info">
         <div class="resultado-label">Dirección detectada:</div>
         <div class="resultado-dir">{{ form.direccion }}</div>
-        <div class="resultado-coords">
-          Lat: {{ form.latitud }} | Lng: {{ form.longitud }}
-        </div>
+        <div class="resultado-coords">Lat: {{ form.latitud }} | Lng: {{ form.longitud }}</div>
       </div>
-    </div>
-
-    <div class="mapa-resultado cargando" *ngIf="loadingDireccion">
-      <div class="resultado-ico">⏳</div>
-      <div class="resultado-info">Obteniendo dirección...</div>
     </div>
 
     <div class="mapa-footer">
       <button class="btn-secondary" (click)="cerrarMapa()">Cancelar</button>
-      <button class="btn-primary" style="width:auto"
-              (click)="confirmarUbicacion()"
+      <button class="btn-primary" style="width:auto" (click)="confirmarUbicacion()" 
               [disabled]="form.latitud === 0">
         ✅ Confirmar Ubicación
       </button>
     </div>
-
   </div>
 </div>

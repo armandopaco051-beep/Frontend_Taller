@@ -1,5 +1,5 @@
 .page-wrapper {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 32px 24px;
 }
@@ -10,26 +10,77 @@
   align-items: center;
   margin-bottom: 28px;
 
-  h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
-  p  { color: var(--text-muted); font-size: 14px; }
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
 }
 
-// ---- TABLA ----
+// Estilos de tabla
 .dir-cell {
-  max-width: 220px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 250px;
+  min-width: 220px;
+  white-space: normal;
   font-size: 13px;
+  line-height: 1.4;
 }
 
-.coords {
-  font-size: 11px;
+.coords, .fecha-cell, .usuario-cell, .horario-cell {
+  font-size: 12px;
   color: var(--text-muted);
   font-family: 'Space Mono', monospace;
 }
 
-.actions { display: flex; gap: 8px; }
+.obs-cell {
+  max-width: 220px;
+  min-width: 180px;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: normal;
+  line-height: 1.4;
+}
+
+// Estados del taller
+.estado-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.estado-aprobado {
+  background: rgba(76, 175, 80, 0.12);
+  color: #9be7a2;
+  border: 1px solid rgba(76, 175, 80, 0.25);
+}
+
+.estado-rechazado {
+  background: rgba(244, 67, 54, 0.12);
+  color: #ff9d96;
+  border: 1px solid rgba(244, 67, 54, 0.25);
+}
+
+.estado-pendiente {
+  background: rgba(255, 152, 0, 0.12);
+  color: #ffd27f;
+  border: 1px solid rgba(255, 152, 0, 0.25);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 
 .btn-danger {
   background: transparent;
@@ -40,13 +91,20 @@
   font-size: 13px;
   cursor: pointer;
   transition: .2s;
-  &:hover { background: var(--error); color: white; }
+
+  &:hover {
+    background: var(--error);
+    color: white;
+  }
 }
 
-.btn-secondary { padding: 6px 12px; font-size: 13px; }
-.empty { text-align: center; color: var(--text-muted); padding: 40px; }
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px;
+}
 
-// ---- MODAL FORMULARIO ----
+// Modales
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -59,7 +117,7 @@
 
 .modal {
   width: 100%;
-  max-width: 520px;
+  max-width: 620px;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -70,19 +128,27 @@
   align-items: center;
   margin-bottom: 24px;
 
-  h3 { font-size: 20px; font-weight: 700; }
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+  }
 }
 
 .close-btn {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-muted);
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   transition: .15s;
-  &:hover { border-color: var(--error); color: var(--error); }
+
+  &:hover {
+    border-color: var(--error);
+    color: var(--error);
+  }
 }
 
 .form-grid {
@@ -100,7 +166,7 @@
   border-top: 1px solid var(--border);
 }
 
-// ---- INPUT + BOTÓN MAPA ----
+// Mapa
 .input-map-row {
   display: flex;
   gap: 10px;
@@ -122,11 +188,6 @@
     &.loading-input {
       border-color: var(--warning);
       opacity: 0.7;
-    }
-
-    &.filled {
-      border-color: #4caf50;
-      color: #a5d6a7;
     }
   }
 }
@@ -162,7 +223,6 @@
   font-family: 'Space Mono', monospace;
 }
 
-// ---- MODAL MAPA ----
 .mapa-overlay {
   z-index: 1100;
 }
@@ -190,10 +250,20 @@
     align-items: center;
     gap: 14px;
 
-    .mapa-ico { font-size: 28px; }
+    .mapa-ico {
+      font-size: 28px;
+    }
 
-    h3 { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
-    p  { font-size: 13px; color: var(--text-muted); }
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
   }
 }
 
@@ -211,14 +281,12 @@
   }
 }
 
-// EL MAPA EN SÍ
 #mapa-leaflet {
   height: 400px;
   width: 100%;
   z-index: 1;
 }
 
-// RESULTADO DIRECCIÓN
 .mapa-resultado {
   display: flex;
   align-items: flex-start;
@@ -233,7 +301,11 @@
     align-items: center;
   }
 
-  .resultado-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .resultado-ico {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
 
   .resultado-label {
     font-size: 11px;

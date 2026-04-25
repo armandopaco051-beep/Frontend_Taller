@@ -1,41 +1,125 @@
 <div class="login-wrapper">
   <div class="login-left">
-    <div class="brand">
-      <span class="brand-icon">🚗</span>
-      <h1>EmergVial</h1>
-      <p>Plataforma Inteligente de Atención de Emergencias Vehiculares</p>
+    <div class="left-top">
+      <div class="brand">
+        <a routerLink="/" class="brand brand-link">
+          <div class="brand-logo-wrap">
+            <img src="logo-vialert.png" alt="Logo VIALERT" class="brand-logo">
+          </div>
+        </a>
+        <div class="brand-texts">
+          <h1>VIALERT</h1>
+          <p>Emergencias Vehiculares</p>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+        <h2>
+          Diagnóstico
+          <span>inteligente,</span>
+          respuesta
+          <span>inmediata.</span>
+        </h2>
+
+        <p class="hero-desc">
+          Plataforma con IA para atender emergencias vehiculares en tiempo real,
+          conectando conductores, mecánicos y servicios de auxilio.
+        </p>
+      </div>
     </div>
-    <div class="features">
-      <div class="feature"><span>⚡</span> Asignación inteligente en tiempo real</div>
-      <div class="feature"><span>🤖</span> Diagnóstico con Inteligencia Artificial</div>
-      <div class="feature"><span>📍</span> Geolocalización precisa de incidentes</div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <strong>24/7</strong>
+        <span>Disponible</span>
+      </div>
+
+      <div class="stat-card">
+        <strong>&lt;3min</strong>
+        <span>Respuesta</span>
+      </div>
+
+      <div class="stat-card">
+        <strong>IA</strong>
+        <span>Diagnóstico</span>
+      </div>
+    </div>
+
+    <div class="left-footer">
+      © 2026 VIALERT. Todos los derechos reservados.
     </div>
   </div>
 
   <div class="login-right">
-    <div class="login-card">
-      <h2>Iniciar Sesión</h2>
-      <p class="subtitle">Accede al panel de gestión</p>
+    <form class="login-card" #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)" novalidate>
+      <h2>Bienvenido de nuevo</h2>
+      <p class="subtitle">Inicia sesión para gestionar tus emergencias.</p>
 
       <div *ngIf="error" class="alert alert-error">{{ error }}</div>
 
       <div class="form-group">
         <label>Correo electrónico</label>
-        <input type="email" [(ngModel)]="email" name="email" placeholder="correo@ejemplo.com" />
+        <input
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          #emailModel="ngModel"
+          required
+          email
+          placeholder="tu@correo.com"
+          [class.input-invalid]="submitted && emailModel.invalid"
+        />
+
+        <small class="field-error" *ngIf="submitted && emailModel.errors?.['required']">
+          Falta rellenar el correo electrónico.
+        </small>
+
+        <small class="field-error" *ngIf="submitted && emailModel.errors?.['email']">
+          Ingresa un correo válido.
+        </small>
       </div>
 
       <div class="form-group">
-        <label>Password</label>
-        <input type="password" [(ngModel)]="password" placeholder="••••••••" />
+        <div class="label-row">
+          <label>Contraseña</label>
+          <a routerLink="/recuperar-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          #passwordModel="ngModel"
+          required
+          minlength="4"
+          placeholder="••••"
+          [class.input-invalid]="submitted && passwordModel.invalid"
+        />
+
+        <small class="field-error" *ngIf="submitted && passwordModel.errors?.['required']">
+          Falta rellenar la contraseña.
+        </small>
+
+        <small class="field-error" *ngIf="submitted && passwordModel.errors?.['minlength']">
+          La contraseña debe tener al menos 8 caracteres.
+        </small>
       </div>
-      <button class="btn-primary" (click)="onLogin()" [disabled]="loading">
-        {{ loading ? 'Ingresando...' : 'Iniciar Sesión' }}
+
+      <div class="remember-row">
+        <label class="remember-check">
+          <input type="checkbox" />
+          <span>Recordarme en este dispositivo</span>
+        </label>
+      </div>
+
+      <button class="btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
       </button>
 
-      <div class="links">
-        <a routerLink="/recuperar-password">¿Olvidaste tu password?</a>
-        <a routerLink="/registro">Crear cuenta nueva</a>
+      <div class="register-row">
+        ¿No tienes cuenta?
+        <a routerLink="/registro">Regístrate</a>
       </div>
-    </div>
+    </form>
   </div>
 </div>

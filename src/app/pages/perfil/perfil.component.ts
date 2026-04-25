@@ -34,7 +34,7 @@ export class PerfilComponent implements OnInit {
     if (this.usuario) {
       this.form = {
         nombre: this.usuario.nombre,
-        apellidos: this.usuario.apellidos,
+        apellidos: this.usuario.apellido,
         email: this.usuario.email,
         telefono: this.usuario.telefono
       };
@@ -42,51 +42,58 @@ export class PerfilComponent implements OnInit {
   }
 
   guardarPerfil() {
-    if (!this.usuario) return;
-    this.loading = true;
-    this.error = '';
+  if (!this.usuario) return;
 
-    this.usuarioService.actualizar(this.usuario.id, this.form).subscribe({
-      next: (updated) => {
-        localStorage.setItem('usuario', JSON.stringify(updated));
-        this.successPerfil = true;
-        setTimeout(() => this.successPerfil = false, 3000);
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = err.error?.detail || 'Error al actualizar perfil';
-        this.loading = false;
-      }
-    });
+  this.loading = true;
+  this.error = '';
+
+  this.usuarioService.actualizar(this.usuario.codigo, this.form).subscribe({
+    next: (updated) => {
+      this.usuario = updated;
+      localStorage.setItem('usuario', JSON.stringify(updated));
+
+      this.successPerfil = true;
+      setTimeout(() => this.successPerfil = false, 3000);
+
+      this.loading = false;
+      alert('Perfil actualizado correctamente');
+    },
+    error: (err) => {
+      this.error = err.error?.detail || 'Error al actualizar perfil';
+      this.loading = false;
+      console.error('Error al actualizar:', err);
+    }
+  });
   }
 
   cambiarPassword() {
-    if (this.passwordForm.password !== this.passwordForm.confirmar) {
-      this.errorPass = 'Los password no coinciden';
-      return;
-    }
-    if (!this.usuario) return;
-    this.loadingPass = true;
-    this.errorPass = '';
-
-    this.authService.cambiarPassword(
-      this.usuario.email,
-      this.passwordForm.password
-    ).subscribe({
-      next: () => {
-        this.successPass = true;
-        this.passwordForm = { password: '', confirmar: '' };
-        setTimeout(() => this.successPass = false, 3000);
-        this.loadingPass = false;
-      },
-      error: (err) => {
-        this.errorPass = err.error?.detail || 'Error al cambiar password';
-        this.loadingPass = false;
-      }
-    });
+   this.authService.cambiarPassword(
+    this.usuario!.email,
+    this.passwordForm.password,
+    this.passwordForm.confirmar
+).subscribe({
+  next: () => {
+    this.successPass = true;
+    this.passwordForm = { password: '', confirmar: '' };
+    setTimeout(() => this.successPass = false, 3000);
+    this.loadingPass = false;
+    alert('Password cambiado correctamente');
+  },
+  error: (err) => {
+    this.errorPass = err.error?.detail || 'Error al cambiar password';
+    this.loadingPass = false;
+  }
+});
   }
 
   getInitial(): string {
     return this.usuario?.nombre?.charAt(0).toUpperCase() || 'U';
+  }
+  Esadmin(): string {
+    if (this.usuario?.rol == '2') {
+      return 'Administrador de Taller';
+    } else {
+      return 'Administrador de Plataforma';
+    }
   }
 }

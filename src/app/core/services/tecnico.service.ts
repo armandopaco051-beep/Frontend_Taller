@@ -2,29 +2,45 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../enviroments/enviroments';
-import { Tecnico, TecnicoCreate } from '../../models/tecnico.models';
+import { Tecnico,TecnicoCreate,TecnicoUpdate } from '../../models/tecnico.models';
 
-@Injectable({providedIn: 'root'})
-export class TecnicoService{
-    private apiUrl = `${environment.apiUrl}/tecnicos`;
-    constructor (private http: HttpClient) {}
-    // Listar técnicos por taller
-    listarPorTaller(id_taller: number): Observable<Tecnico[]> {
+@Injectable({ providedIn: 'root' })
+export class TecnicoService {
+  private apiUrl = `${environment.apiUrl}/tecnicos`;
+
+  constructor(private http: HttpClient) {}
+
+  // GLOBAL
+  listarPorTaller(id_taller: number): Observable<Tecnico[]> {
     return this.http.get<Tecnico[]>(`${this.apiUrl}/taller/${id_taller}`);
   }
 
-  // Crear técnico
   crear(datos: TecnicoCreate): Observable<Tecnico> {
-    return this.http.post<Tecnico>(this.apiUrl, datos);
+    return this.http.post<Tecnico>(`${this.apiUrl}/crear`, datos);
   }
 
-  // Actualizar técnico hace petición PUT
- actualizar(codigo: number, datos: Partial<Tecnico>): Observable<Tecnico> {
-  return this.http.patch<Tecnico>(`${this.apiUrl}/${codigo}`, datos);
+  actualizar(codigo: string, datos: TecnicoUpdate): Observable<Tecnico> {
+    return this.http.patch<Tecnico>(`${this.apiUrl}/${codigo}`, datos);
   }
 
-  // Eliminar técnico hace petición DELETE
-  eliminar(codigo: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${codigo}`);
+  eliminar(codigo: string): Observable<{ mensaje: string }> {
+    return this.http.delete<{ mensaje: string }>(`${this.apiUrl}/${codigo}`);
+  }
+
+  // ADMIN TALLER
+  listarMisTecnicos(): Observable<Tecnico[]> {
+    return this.http.get<Tecnico[]>(`${this.apiUrl}/mis-tecnicos`);
+  }
+
+  crearMiTecnico(datos: TecnicoCreate): Observable<Tecnico> {
+    return this.http.post<Tecnico>(`${this.apiUrl}/mis-tecnicos`, datos);
+  }
+
+  actualizarMiTecnico(codigo: string, datos: TecnicoUpdate): Observable<Tecnico> {
+    return this.http.patch<Tecnico>(`${this.apiUrl}/mis-tecnicos/${codigo}`, datos);
+  }
+
+  eliminarMiTecnico(codigo: string): Observable<{ mensaje: string }> {
+    return this.http.delete<{ mensaje: string }>(`${this.apiUrl}/mis-tecnicos/${codigo}`);
   }
 }

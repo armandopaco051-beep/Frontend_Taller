@@ -1,31 +1,89 @@
-import { Injectable } from "@angular/core";
-import {HttpClient} from '@angular/common/http'
-import { Observable } from "rxjs";
-import { environment } from "../../../enviroments/enviroments";
-import {Taller, TallerCreate} from '../../models/taller.model';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { Taller, TallerCreate, Tecnico } from '../../models/taller.model';
+import { environment } from '../../../enviroments/enviroments';
 
-@Injectable({providedIn: 'root'})
-// crear servicio para taller
-export class tallerService{
-    private apiUrl = `${environment.apiUrl}/talleres`;
-    constructor (private http: HttpClient){}
-    listar () : Observable<Taller[]>{
-        return this.http.get<Taller[]>(this.apiUrl);
-    }
-    // Listar todos los talleres hace petición GET
-    obtener(codigo: number): Observable<Taller> {
-    return this.http.get<Taller>(`${this.apiUrl}/${codigo}`);
+@Injectable({ providedIn: 'root' })
+export class TallerService {
+  private apiUrl = `${environment.apiUrl}/talleres`;
+
+  constructor(private http: HttpClient) {}
+
+  private normalizarTaller(t: any): Taller {
+    return {
+      codigo: t.codigo,
+      nombre: t.nombre,
+      telefono: t.telefono,
+      direccion: t.direccion,
+      latitud: Number(t.latitud),
+      longitud: Number(t.longitud),
+      activo: !!t.activo,
+      estado_registro: t.estado_registro ?? 'pendiente',
+      observacion_admin: t.observacion_admin ?? null,
+      fecha_solicitud: t.fecha_solicitud ?? null,
+      fecha_respuesta: t.fecha_respuesta ?? null,
+      horario_inicio: t.horario_inicio ? String(t.horario_inicio).slice(0, 5) : '',
+      horario_fin: t.horario_fin ? String(t.horario_fin).slice(0, 5) : '',
+      usuario_id: t.usuario_id ?? null
+    };
   }
- // Obtener taller por código hace petición GET
+
+  listar(): Observable<Taller[]> {
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map(data => data.map(t => this.normalizarTaller(t)))
+    );
+  }
+
+  obtener(codigo: number): Observable<Taller> {
+    return this.http.get<any>(`${this.apiUrl}/${codigo}`).pipe(
+      map(t => this.normalizarTaller(t))
+    );
+  }
+
   crear(datos: TallerCreate): Observable<Taller> {
-    return this.http.post<Taller>(this.apiUrl, datos);
+    return this.http.post<any>(this.apiUrl, datos).pipe(
+      map(t => this.normalizarTaller(t))
+    );
   }
- // Actualizar taller hace petición PUT
+
   actualizar(codigo: number, datos: Partial<TallerCreate>): Observable<Taller> {
-    return this.http.put<Taller>(`${this.apiUrl}/${codigo}`, datos);
+    return this.http.put<any>(`${this.apiUrl}/${codigo}`, datos).pipe(
+      map(t => this.normalizarTaller(t))
+    );
   }
- // Desactivar taller hace petición DELETE
-  desactivar(codigo: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${codigo}`);
+
+  desactivar(codigo: number): Observable<{ mensaje: string }> {
+    return this.http.delete<{ mensaje: string }>(`${this.apiUrl}/${codigo}`);
+  }
+
+  // Técnicos
+  listarTecnicos(): Observable<Tecnico[]> {
+    return this.http.get<Tecnico[]>(`${this.apiUrl}/tecnicos`);
+  }
+
+  obtenerTecnicosPorTaller(codigoTaller: number): Observable<Tecnico[]> {
+    return this.http.get<Tecnico[]>(`${this.apiUrl}/${codigoTaller}/tecnicos`);
+  }
+
+  crearTecnico(datos: Omit<Tecnico, 'codigo'>): Observable<Tecnico> {
+    return this.http.post<Tecnico>(`${this.apiUrl}/tecnicos`, datos);
+  }
+
+  actualizarTecnico(codigo: number, datos: Partial<Tecnico>): Observable<Tecnico> {
+    return this.http.put<Tecnico>(`${this.apiUrl}/tecnicos/${codigo}`, datos);
+  }
+
+  eliminarTecnico(codigo: number): Observable<{ mensaje: string }> {
+    return this.http.delete<{ mensaje: string }>(`${this.apiUrl}/tecnicos/${codigo}`);
+  }
+
+  // Acciones de administrador
+  aprobarTaller(codigo: number): Observable<{ mensaje: string }> {
+    return this.http.put<{ mensaje: string }>(`${this.apiUrl}/${codigo}/aprobar`, {});
+  }
+
+  rechazarTaller(codigo: number, observacion: string): Observable<{ mensaje: string }> {
+    return this.http.put<{ mensaje: string }>(`${this.apiUrl}/${codigo}/rechazar`, { observacion_admin: observacion });
   }
 }
