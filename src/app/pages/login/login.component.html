@@ -60,21 +60,20 @@
       <div class="form-group">
         <label>Correo electrónico</label>
         <input
-          type="email"
-          [(ngModel)]="email"
-          name="email"
-          #emailModel="ngModel"
+          type="text"
+          [(ngModel)]="identificador"
+          name="identificador"
+          #identificadorModel="ngModel"
           required
-          email
-          placeholder="tu@correo.com"
-          [class.input-invalid]="submitted && emailModel.invalid"
+          placeholder="tu@correo.com o tu codigo de tecnico "
+          [class.input-invalid]="submitted && identificadorModel.invalid"
         />
 
-        <small class="field-error" *ngIf="submitted && emailModel.errors?.['required']">
+        <small class="field-error" *ngIf="submitted && identificadorModel.errors?.['required']">
           Falta rellenar el correo electrónico.
         </small>
 
-        <small class="field-error" *ngIf="submitted && emailModel.errors?.['email']">
+        <small class="field-error" *ngIf="submitted && identificadorModel.errors?.['email']">
           Ingresa un correo válido.
         </small>
       </div>

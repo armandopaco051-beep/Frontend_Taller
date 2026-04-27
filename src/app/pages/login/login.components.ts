@@ -12,7 +12,7 @@ import { AuthService } from "../../core/services/auth.service";
     styleUrls : ['login.component.scss']
 })
 export class LoginComponent {
-    email = ''; 
+    identificador = ''; 
     password = ''; 
     loading =false ; 
     error = ''; 
@@ -26,7 +26,7 @@ export class LoginComponent {
         }
         this.loading = true ; 
         this.error = ''; 
-        this.auth.login({ email: this.email, password: this.password}).subscribe({
+        this.auth.login({ identificador: this.identificador, password: this.password}).subscribe({
              next: (resp) => {
              const usuario = resp.usuario;
 
@@ -51,6 +51,10 @@ export class LoginComponent {
                         }
                         
                   this.router.navigate(['/admin-taller/dashboard', idTaller]);
+                    return;
+                }
+                if (usuario.id_rol ===3){
+                    this.router.navigate(['/dashboard-tecnicos']);
                     return;
                 }
 

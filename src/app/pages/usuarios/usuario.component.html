@@ -27,7 +27,7 @@
           <td>{{ u.telefono }}</td>
           <td>
             <span class="rol-badge" [ngClass]="'rol-'+u.id_rol">
-              {{ u.nombre_rol }}
+              {{ getNombreRol(u.id_rol) }}
             </span>
           </td>
           <td>

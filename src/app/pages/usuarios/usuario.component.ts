@@ -428,4 +428,15 @@ export class UsuariosComponent implements OnInit {
 
     this.mostrarMapa = false;
   }
+
+  getNombreRol(idRol: number): string {
+    const roles: Record<number, string> = {
+      1: 'Admin plataforma',
+      2: 'Admin taller',
+      3: 'Técnico',
+      4: 'Cliente'
+    };
+
+    return roles[idRol] || 'Sin rol';
+  }
 }

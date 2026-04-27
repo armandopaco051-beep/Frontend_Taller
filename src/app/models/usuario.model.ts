@@ -13,8 +13,12 @@ export interface Usuario {
 }
 
 export interface loginRequest {
-    email: string;
+    identificador: string;
     password: string;
+}
+export interface LoginTecnico{
+    codigo :string ;
+    password : string ; 
 }
 
 export interface RegisterRequest {

@@ -113,7 +113,7 @@
       <div class="block-card">
         <div class="block-head">
           <h3>Incidentes del taller</h3>
-          <a href="javascript:void(0)">Ver todos</a>
+          <a href="javascript:void(0)" (click)="cargarIncidentesTaller()">Actualizar</a>
         </div>
 
         <div class="incident-list" *ngIf="solicitudes.length > 0; else sinIncidentes">

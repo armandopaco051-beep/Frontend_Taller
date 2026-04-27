@@ -42,13 +42,16 @@ export class NavbarComponent {
   esAdminTaller(): boolean {
     return this.auth.esAdminTaller();
   }
+  esTecnico() :boolean {
+    return this.auth.esTecnico(); 
+  }
 
   private configurarMenu(): void {
     this.idTallerNav = Number(localStorage.getItem('id_taller') || 0);
 
     if (this.esAdminPlataforma()) {
       this.menuItems = [
-        { label: 'Salpicadero', path: '/dashboard', exact: true },
+        { label: 'Dashboard', path: '/dashboard', exact: true },
         { label: 'Usuarios', path: '/usuarios' },
         { label: 'Roles', path: '/roles' },
         { label: 'Talleres', path: '/talleres' },
@@ -68,11 +71,21 @@ export class NavbarComponent {
       this.menuItems = [
         { label: 'Dashboard', path: `/admin-taller/dashboard/${this.idTallerNav}`, exact: true },
         { label: 'Técnicos', path: '/admin-taller/tecnicos' },
-        { label: 'Bitácora', path: '/bitacora' },
+        { label: 'Incidentes', path: '/incidentes-taller' },
+        { label: 'Bitácora', path: '/bitacora' }, //arreglar esa bitacora 
         { label: 'Perfil', path: '/perfil' }
       ];
       return;
     }
+    if (this.esTecnico()) {
+    this.menuItems = [
+      { label: 'Inicio', path: '/tecnico/dashboard', exact: true },
+      { label: 'Incidentes', path: '/tecnico/incidentes' },
+      { label: 'Historial', path: '/tecnico/historial' },
+      { label: 'Perfil', path: '/perfil' }
+    ];
+    return;
+  }
 
     this.menuItems = [];
   }
@@ -84,6 +97,12 @@ export class NavbarComponent {
 
     if (this.esAdminPlataforma()) {
       return '/dashboard';
+    }
+    if (this.esAdminTaller()) {
+      return '/admin-taller/dashboard/';
+    }
+    if (this.esTecnico()) {
+      return '/tecnico/dashboard';
     }
 
     return '/';

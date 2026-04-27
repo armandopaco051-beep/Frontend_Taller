@@ -35,6 +35,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/roles/roles.component').then(m => m.RolesComponent),
     canActivate: [rolGuard([1])] // Solo admin plataforma
   },
+  {
+    path: 'incidentes-taller',
+    loadComponent: () => import('./pages/incidentes-taller/incidentes-taller.component').then(m => m.IncidentesTallerComponent),
+    canActivate: [authGuard, rolGuard([2])] // Solo admin taller
+  },
    {
     path: 'admin-taller/dashboard/:idTaller',
     canActivate: [authGuard, rolGuard([2])],

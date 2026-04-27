@@ -237,7 +237,9 @@ export class TalleresComponent implements OnInit, OnDestroy {
       : this.tallerService.crear(payload);
 
     accion.subscribe({
+      
       next: (tallerGuardado) => {
+         this.loading = false;
         if (this.editando) {
           this.talleres = this.talleres.map(t =>
             t.codigo === tallerGuardado.codigo ? tallerGuardado : t
@@ -246,7 +248,8 @@ export class TalleresComponent implements OnInit, OnDestroy {
           this.talleres = [...this.talleres, tallerGuardado];
         }
         this.cerrarModal();
-        this.loading = false;
+        this.form = this.getFormInicial();
+        console.log('Taller guardado:', tallerGuardado);
       },
       error: (err) => {
         this.error = err.error?.detail || 'Error al guardar taller';
@@ -254,6 +257,8 @@ export class TalleresComponent implements OnInit, OnDestroy {
         console.error('Error al guardar taller:', err);
       }
     });
+    this.loading = false; 
+    
   }
 
   desactivar(codigo: number): void {
